@@ -1,0 +1,72 @@
+use db_uni;
+
+-- (1) Selezionare cognome e nome tutti gli insegnanti ,ordinati per cognome e poi per nome in ordine alfabetico 
+select t.name , t.surname
+from teachers as t 
+order by t.name;
+
+-- (2) Selezionare tutti gli insegnamenti (Courses) che valogono almeno 12 cfu
+select c.name
+from courses as c
+where c.cfu > 12;
+
+-- (3) Selezionare tutti gli studenti nati nel 1990 
+select *
+from students as s 
+where YEAR(s.date_of_birth) = 1990;
+
+-- (4) Selezionare tutti i corsi del primo semestre del primoanno di un qualsiasi corso di laurea
+select *
+from courses
+where year = 1 AND period = 'I semestre';
+
+-- (5) Da qunati dipartimenti è composta l'universita?
+select count(*) as tot_dep
+from departments;
+
+-- (6) Contare tutti gli insegnamenti il cui cognome termina con la "E"
+select *
+from teachers as t 
+where t.surname LIKE '%e';
+
+-- (7) Selezionare nome,cognome e codice fiscale di tutti gli studenti iscritti al Corso di laurea in economia , in ordine alfabetico
+select s.name, s.surname ,s.fiscal_code , d.name
+from students as s 
+join degrees as d
+where d.name = 'Corso di Laurea in Economia';
+
+-- (8) Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di Neuroscienze
+select d1.id
+from degrees as d1 
+join departments as d2
+on d1.department_id = d2.id
+where d2.name = 'Dipartimento di Neuroscienze' AND d1.level = 'magistrale';
+
+-- BONUS (1) Selezionare nome e cognome di tutti gli studenti che hanno superato l'esame del corso "maxime laboriosam nostrum"
+select s.name , s.surname
+from exams as e 
+join courses as c 
+on e.course_id = c.id 
+join exam_student as e2
+on e2.exam_id = e.id
+join students as s
+on s.id = e2.student_id
+where c.name = 'maxime laboriosam nostrum' and e2.vote >= 18; 
+
+-- BONUS (2) Elencare tutti i docenti che insegnano nel Dipartimento di Matematica 
+select distinct t.id , t.name,t.surname 
+from departments as d1
+join degrees as d2
+on d2.department_id = d1.id AND d1.name = 'Dipartimento di Matematica'
+join courses as c 
+on c.degree_id = d2.id
+join course_teacher as ct1 
+on ct1.course_id = c.id
+join teachers as t 
+on t.id = ct1.teacher_id;
+
+
+
+
+
+
